@@ -10,7 +10,45 @@ const db = admin.firestore();
 const PROJECT_ID = 'project_id';
 const LOCATION = 'us-central1'; // Vertex AI primary region
 
-let generativeModel: any = null;
+interface FootprintData {
+  utilities?: {
+    electricityKwh?: number;
+    electricityInr?: number;
+    electricityBoard?: string;
+    lpgCylindersCount?: number;
+    lpgCylindersDepletionDays?: number;
+  };
+  transport?: {
+    metroKm?: number;
+    localTrainKm?: number;
+    autoRickshawKm?: number;
+    twoWheelerKm?: number;
+    twoWheelerType?: 'petrol' | 'electric';
+    carKm?: number;
+    carType?: 'petrol' | 'diesel' | 'cng' | 'ev';
+  };
+  diet?: {
+    vegetarianMeals?: number;
+    nonVegetarianMeals?: number;
+    veganMeals?: number;
+    dairyLiters?: number;
+    foodWasteKg?: number;
+  };
+  infrastructure?: {
+    acBaselineTemp?: number;
+    acHoursPerDay?: number;
+    solarInstalledKw?: number;
+    starAppliancesCount?: number;
+  };
+}
+
+interface ChatRequest {
+  message: string;
+  activeFootprint: FootprintData | null;
+  activeTab: string;
+}
+
+let generativeModel: ReturnType<InstanceType<typeof VertexAI>['getGenerativeModel']> | null = null;
 
 try {
   const vertexAI = new VertexAI({ project: PROJECT_ID, location: LOCATION });
@@ -35,16 +73,36 @@ export const ecoAgentChat = onCall({ region: 'asia-south1', maxInstances: 10 }, 
     throw new HttpsError('unauthenticated', 'User must be authenticated to talk to the EcoAgent.');
   }
 
-  const { message, activeFootprint, activeTab } = request.data;
+  const data = request.data as ChatRequest;
+  const { message, activeFootprint, activeTab } = data;
   
   if (!message || typeof message !== 'string') {
     throw new HttpsError('invalid-argument', 'Message must be a non-empty string.');
   }
 
-  // Basic regex filter for prompt injection/XSS mitigation
-  const sanitizedMessage = message
-    .replace(/<[^>]*>/g, '') // remove HTML tags
-    .substring(0, 500); // truncate to prevent resource abuse
+  // Regex filtering to completely mitigate prompt injection and XSS
+  const promptInjectionRegex = /(ignore\s+(?:all\s+)?previous|system\s+prompt|you\s+are\s+now|bypass\s+security|override\s+configuration|forget\s+what\s+i\s+said|act\s+as\s+a)/i;
+  const xssRegex = /(<script|javascript:|on\w+\s*=|\bstyle\s*=|href\s*=\s*["']\s*javascript:|<[^>]+onload)/i;
+
+  // Recursively validate all inputs inside the request payload to ensure no prompt injection or XSS
+  const validateInput = (val: unknown) => {
+    if (typeof val === 'string') {
+      if (promptInjectionRegex.test(val)) {
+        throw new HttpsError('invalid-argument', 'Security check failed: Prompt injection detected.');
+      }
+      if (xssRegex.test(val)) {
+        throw new HttpsError('invalid-argument', 'Security check failed: XSS patterns detected.');
+      }
+    } else if (typeof val === 'object' && val !== null) {
+      for (const value of Object.values(val as Record<string, unknown>)) {
+        validateInput(value);
+      }
+    }
+  };
+
+  validateInput(data);
+
+  const sanitizedMessage = message.substring(0, 500); // truncate to prevent resource abuse
 
   const userId = request.auth.uid;
 
@@ -132,6 +190,12 @@ export const ecoAgentChat = onCall({ region: 'asia-south1', maxInstances: 10 }, 
   return { response: fallbackText };
 });
 
+interface SyncRequest {
+  monthId: string;
+  totalCarbonKg: number;
+  carbonSavedKg: number;
+}
+
 /**
  * OnCall function to update user footprint aggregates and sync with the secure public leaderboard.
  * Takes { monthId: string, totalCarbonKg: number, carbonSavedKg: number }
@@ -141,7 +205,8 @@ export const syncUserFootprintAndLeaderboard = onCall({ region: 'asia-south1', m
     throw new HttpsError('unauthenticated', 'User must be authenticated.');
   }
 
-  const { monthId, totalCarbonKg, carbonSavedKg } = request.data;
+  const data = request.data as SyncRequest;
+  const { monthId, totalCarbonKg, carbonSavedKg } = data;
   const userId = request.auth.uid;
 
   if (!monthId || typeof totalCarbonKg !== 'number') {

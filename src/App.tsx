@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Navbar from './components/Navbar';
 import TrackingMatrix from './components/TrackingMatrix';
 import EcoAgentPanel from './components/EcoAgentPanel';
@@ -6,6 +6,7 @@ import Leaderboard from './components/Leaderboard';
 import AuthModal from './components/AuthModal';
 import { auth, db, functions } from './firebase/config';
 import { onAuthStateChanged } from 'firebase/auth';
+import type { User } from 'firebase/auth';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { httpsCallable } from 'firebase/functions';
 import { Bot } from 'lucide-react';
@@ -22,7 +23,7 @@ const getCurrentMonthId = () => {
 export default function App() {
   const [activeView, setActiveView] = useState<'tracker' | 'leaderboard'>('tracker');
   const [activeTab, setActiveTab] = useState('Utilities');
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
   
@@ -47,22 +48,21 @@ export default function App() {
     }
   }, [darkMode]);
 
-  // 2. Auth State Effect
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      setUser(currentUser);
-      if (currentUser) {
-        // Load data from Firestore
-        await loadUserData(currentUser.uid);
-      } else {
-        // Load offline data from Local Storage
-        loadOfflineData();
+  // Data Loading Helpers
+  const loadOfflineData = useCallback(() => {
+    const saved = localStorage.getItem('ecotrace_draft_footprint');
+    if (saved) {
+      try {
+        setActiveFootprint(JSON.parse(saved));
+      } catch {
+        setActiveFootprint(null);
       }
-    });
-    return () => unsubscribe();
+    } else {
+      setActiveFootprint(null);
+    }
   }, []);
 
-  const loadUserData = async (uid: string) => {
+  const loadUserData = useCallback(async (uid: string) => {
     try {
       const monthId = getCurrentMonthId();
       // Read user's monthly footprint document
@@ -77,20 +77,22 @@ export default function App() {
       console.error('Error loading cloud data:', err);
       loadOfflineData();
     }
-  };
+  }, [loadOfflineData]);
 
-  const loadOfflineData = () => {
-    const saved = localStorage.getItem('ecotrace_draft_footprint');
-    if (saved) {
-      try {
-        setActiveFootprint(JSON.parse(saved));
-      } catch (e) {
-        setActiveFootprint(null);
+  // 2. Auth State Effect
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      setUser(currentUser);
+      if (currentUser) {
+        // Load data from Firestore
+        await loadUserData(currentUser.uid);
+      } else {
+        // Load offline data from Local Storage
+        loadOfflineData();
       }
-    } else {
-      setActiveFootprint(null);
-    }
-  };
+    });
+    return () => unsubscribe();
+  }, [loadUserData, loadOfflineData]);
 
   // 3. Save Footprint Data callback
   const handleSaveFootprint = async (formData: FootprintDocument) => {

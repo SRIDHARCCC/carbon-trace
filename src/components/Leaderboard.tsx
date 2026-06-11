@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { db } from '../firebase/config';
 import { collection, query, orderBy, limit, onSnapshot } from 'firebase/firestore';
 import { Trophy, ShieldAlert, Award, Filter, Loader2 } from 'lucide-react';
+import type { User } from 'firebase/auth';
 
 interface LeaderboardEntry {
   id: string;
@@ -9,11 +10,11 @@ interface LeaderboardEntry {
   city: string;
   totalCarbonKg: number;
   carbonSavedKg: number;
-  updatedAt?: any;
+  updatedAt?: unknown;
 }
 
 interface LeaderboardProps {
-  currentUser: any;
+  currentUser: User | null;
 }
 
 export default function Leaderboard({ currentUser }: LeaderboardProps) {
@@ -23,17 +24,21 @@ export default function Leaderboard({ currentUser }: LeaderboardProps) {
 
   // Firestore listener for top entries
   useEffect(() => {
-    setLoading(true);
     const leaderboardCollection = collection(db, 'leaderboard');
     const q = query(leaderboardCollection, orderBy('carbonSavedKg', 'desc'), limit(50));
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const docsData: LeaderboardEntry[] = [];
       snapshot.forEach((doc) => {
+        const data = doc.data();
         docsData.push({
           id: doc.id,
-          ...(doc.data() as any)
-        } as LeaderboardEntry);
+          name: data.name || 'Anonymous',
+          city: data.city || 'Other',
+          totalCarbonKg: data.totalCarbonKg || 0,
+          carbonSavedKg: data.carbonSavedKg || 0,
+          updatedAt: data.updatedAt
+        });
       });
       setEntries(docsData);
       setLoading(false);

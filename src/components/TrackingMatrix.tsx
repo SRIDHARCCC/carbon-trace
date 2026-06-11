@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import ReactECharts from 'echarts-for-react';
 import { 
   calculateUtilitiesFootprint, 
@@ -11,6 +11,7 @@ import {
 import type { FootprintDocument } from '../utils/carbonCalculators';
 import { safeParseNumber } from '../utils/security';
 import { Save, RefreshCw, Zap, Car, Utensils, Home, BarChart2, CheckCircle2, AlertTriangle } from 'lucide-react';
+import type { User } from 'firebase/auth';
 
 interface TrackingMatrixProps {
   initialData: FootprintDocument | null;
@@ -18,7 +19,7 @@ interface TrackingMatrixProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
   isSaving: boolean;
-  user: any;
+  user: User | null;
 }
 
 const defaultFootprint: FootprintDocument = {
@@ -65,15 +66,21 @@ export default function TrackingMatrix({
   const [formData, setFormData] = useState<FootprintDocument>(defaultFootprint);
   const [saveStatus, setSaveStatus] = useState<{ type: 'success' | 'error' | null, message: string }>({ type: null, message: '' });
 
-  // Sync with initialData from Firestore if available
-  useEffect(() => {
+  // Sync with initialData during render to avoid cascading useEffect renders
+  const [prevInitialData, setPrevInitialData] = useState<FootprintDocument | null>(initialData);
+  if (initialData !== prevInitialData) {
+    setPrevInitialData(initialData);
     if (initialData) {
       setFormData(initialData);
     }
-  }, [initialData]);
+  }
 
   // Handle nested form field updates
-  const updateField = (module: keyof FootprintDocument, field: string, value: any) => {
+  const updateField = <M extends keyof FootprintDocument, F extends keyof FootprintDocument[M]>(
+    module: M,
+    field: F,
+    value: FootprintDocument[M][F]
+  ) => {
     setFormData(prev => ({
       ...prev,
       [module]: {
@@ -118,8 +125,9 @@ export default function TrackingMatrix({
       await onSave(formData);
       setSaveStatus({ type: 'success', message: 'Footprint logs synced successfully.' });
       setTimeout(() => setSaveStatus({ type: null, message: '' }), 4000);
-    } catch (err: any) {
-      setSaveStatus({ type: 'error', message: err.message || 'Failed to save footprint logs.' });
+    } catch (err) {
+      const errMsg = err instanceof Error ? err.message : 'Failed to save footprint logs.';
+      setSaveStatus({ type: 'error', message: errMsg });
     }
   };
 
@@ -274,8 +282,9 @@ export default function TrackingMatrix({
                   <h3 className="text-sm font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1">Utilities Ledger Logs</h3>
                   
                   <div>
-                    <label className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">State Electricity Board</label>
+                    <label htmlFor="electricity-board" className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">State Electricity Board</label>
                     <select
+                      id="electricity-board"
                       value={formData.utilities.electricityBoard}
                       onChange={(e) => updateField('utilities', 'electricityBoard', e.target.value)}
                       className="w-full bg-[#ffffff] dark:bg-[#09090b] border border-zinc-200 dark:border-zinc-800 rounded-[8px] px-[12px] py-[8px] text-sm text-zinc-950 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500"
@@ -288,8 +297,9 @@ export default function TrackingMatrix({
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Power Consumed (kWh)</label>
+                      <label htmlFor="electricity-kwh" className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Power Consumed (kWh)</label>
                       <input
+                        id="electricity-kwh"
                         type="number"
                         min="0"
                         value={formData.utilities.electricityKwh}
@@ -298,8 +308,9 @@ export default function TrackingMatrix({
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Or Monthly Bill (INR)</label>
+                      <label htmlFor="electricity-inr" className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Or Monthly Bill (INR)</label>
                       <input
+                        id="electricity-inr"
                         type="number"
                         min="0"
                         value={formData.utilities.electricityInr || ''}
@@ -312,8 +323,9 @@ export default function TrackingMatrix({
 
                   <div className="grid grid-cols-2 gap-4 border-t border-zinc-100 dark:border-zinc-800/50 pt-4">
                     <div>
-                      <label className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">LPG Cylinders Depleted</label>
+                      <label htmlFor="lpg-cylinders" className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">LPG Cylinders Depleted</label>
                       <input
+                        id="lpg-cylinders"
                         type="number"
                         min="0"
                         value={formData.utilities.lpgCylindersCount}
@@ -322,8 +334,9 @@ export default function TrackingMatrix({
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Days Per Cylinder</label>
+                      <label htmlFor="lpg-depletion-days" className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Days Per Cylinder</label>
                       <input
+                        id="lpg-depletion-days"
                         type="number"
                         min="1"
                         value={formData.utilities.lpgCylindersDepletionDays}
@@ -342,8 +355,9 @@ export default function TrackingMatrix({
                   
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Metro Transit (km)</label>
+                      <label htmlFor="metro-km" className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Metro Transit (km)</label>
                       <input
+                        id="metro-km"
                         type="number"
                         min="0"
                         value={formData.transport.metroKm}
@@ -352,8 +366,9 @@ export default function TrackingMatrix({
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Local Trains (km)</label>
+                      <label htmlFor="local-train-km" className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Local Trains (km)</label>
                       <input
+                        id="local-train-km"
                         type="number"
                         min="0"
                         value={formData.transport.localTrainKm}
@@ -365,8 +380,9 @@ export default function TrackingMatrix({
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Auto-Rickshaws (km)</label>
+                      <label htmlFor="auto-rickshaw-km" className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Auto-Rickshaws (km)</label>
                       <input
+                        id="auto-rickshaw-km"
                         type="number"
                         min="0"
                         value={formData.transport.autoRickshawKm}
@@ -379,8 +395,9 @@ export default function TrackingMatrix({
 
                   <div className="grid grid-cols-2 gap-4 border-t border-zinc-100 dark:border-zinc-800/50 pt-4">
                     <div>
-                      <label className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Two-Wheeler Commute (km)</label>
+                      <label htmlFor="two-wheeler-km" className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Two-Wheeler Commute (km)</label>
                       <input
+                        id="two-wheeler-km"
                         type="number"
                         min="0"
                         value={formData.transport.twoWheelerKm}
@@ -389,10 +406,11 @@ export default function TrackingMatrix({
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Two-Wheeler Fuel</label>
+                      <label htmlFor="two-wheeler-type" className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Two-Wheeler Fuel</label>
                       <select
+                        id="two-wheeler-type"
                         value={formData.transport.twoWheelerType}
-                        onChange={(e) => updateField('transport', 'twoWheelerType', e.target.value)}
+                        onChange={(e) => updateField('transport', 'twoWheelerType', e.target.value as 'petrol' | 'electric')}
                         className="w-full bg-[#ffffff] dark:bg-[#09090b] border border-zinc-200 dark:border-zinc-800 rounded-[8px] px-[12px] py-[8px] text-sm text-zinc-950 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500"
                       >
                         <option value="petrol">Petrol (Standard)</option>
@@ -403,8 +421,9 @@ export default function TrackingMatrix({
 
                   <div className="grid grid-cols-2 gap-4 pt-1">
                     <div>
-                      <label className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Car Commute (km)</label>
+                      <label htmlFor="car-km" className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Car Commute (km)</label>
                       <input
+                        id="car-km"
                         type="number"
                         min="0"
                         value={formData.transport.carKm}
@@ -413,10 +432,11 @@ export default function TrackingMatrix({
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Car Fuel Type</label>
+                      <label htmlFor="car-type" className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Car Fuel Type</label>
                       <select
+                        id="car-type"
                         value={formData.transport.carType}
-                        onChange={(e) => updateField('transport', 'carType', e.target.value)}
+                        onChange={(e) => updateField('transport', 'carType', e.target.value as 'petrol' | 'diesel' | 'cng' | 'ev')}
                         className="w-full bg-[#ffffff] dark:bg-[#09090b] border border-zinc-200 dark:border-zinc-800 rounded-[8px] px-[12px] py-[8px] text-sm text-zinc-950 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500"
                       >
                         <option value="petrol">Petrol</option>
@@ -436,8 +456,9 @@ export default function TrackingMatrix({
                   
                   <div className="grid grid-cols-3 gap-3">
                     <div>
-                      <label className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Vegan Meals</label>
+                      <label htmlFor="vegan-meals" className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Vegan Meals</label>
                       <input
+                        id="vegan-meals"
                         type="number"
                         min="0"
                         value={formData.diet.veganMeals}
@@ -446,8 +467,9 @@ export default function TrackingMatrix({
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Veg Meals</label>
+                      <label htmlFor="veg-meals" className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Veg Meals</label>
                       <input
+                        id="veg-meals"
                         type="number"
                         min="0"
                         value={formData.diet.vegetarianMeals}
@@ -456,8 +478,9 @@ export default function TrackingMatrix({
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Non-Veg Meals</label>
+                      <label htmlFor="non-veg-meals" className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Non-Veg Meals</label>
                       <input
+                        id="non-veg-meals"
                         type="number"
                         min="0"
                         value={formData.diet.nonVegetarianMeals}
@@ -469,8 +492,9 @@ export default function TrackingMatrix({
 
                   <div className="grid grid-cols-2 gap-4 border-t border-zinc-100 dark:border-zinc-800/50 pt-4">
                     <div>
-                      <label className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Dairy Intake (Liters)</label>
+                      <label htmlFor="dairy-liters" className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Dairy Intake (Liters)</label>
                       <input
+                        id="dairy-liters"
                         type="number"
                         min="0"
                         step="0.1"
@@ -480,8 +504,9 @@ export default function TrackingMatrix({
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Food Waste (kg)</label>
+                      <label htmlFor="food-waste" className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Food Waste (kg)</label>
                       <input
+                        id="food-waste"
                         type="number"
                         min="0"
                         value={formData.diet.foodWasteKg}
@@ -500,8 +525,9 @@ export default function TrackingMatrix({
                   
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">AC Temp Baseline (°C)</label>
+                      <label htmlFor="ac-temp-baseline" className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">AC Temp Baseline (°C)</label>
                       <input
+                        id="ac-temp-baseline"
                         type="number"
                         min="16"
                         max="30"
@@ -511,8 +537,9 @@ export default function TrackingMatrix({
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">AC Runtime (hours/day)</label>
+                      <label htmlFor="ac-runtime" className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">AC Runtime (hours/day)</label>
                       <input
+                        id="ac-runtime"
                         type="number"
                         min="0"
                         max="24"
@@ -525,8 +552,9 @@ export default function TrackingMatrix({
 
                   <div className="grid grid-cols-2 gap-4 border-t border-zinc-100 dark:border-zinc-800/50 pt-4">
                     <div>
-                      <label className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Rooftop Solar (kW)</label>
+                      <label htmlFor="solar-kw" className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Rooftop Solar (kW)</label>
                       <input
+                        id="solar-kw"
                         type="number"
                         min="0"
                         step="0.5"
@@ -536,8 +564,9 @@ export default function TrackingMatrix({
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">5-Star Appliances</label>
+                      <label htmlFor="star-appliances" className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">5-Star Appliances</label>
                       <input
+                        id="star-appliances"
                         type="number"
                         min="0"
                         value={formData.infrastructure.starAppliancesCount}

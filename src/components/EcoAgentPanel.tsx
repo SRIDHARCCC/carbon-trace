@@ -2,6 +2,8 @@ import { useState, useRef, useEffect } from 'react';
 import { functions } from '../firebase/config';
 import { httpsCallable } from 'firebase/functions';
 import { Send, Sparkles, X, Loader2, Bot } from 'lucide-react';
+import type { FootprintDocument } from '../utils/carbonCalculators';
+import { containsPromptInjection, sanitizeHTML } from '../utils/security';
 
 interface ChatMessage {
   sender: 'user' | 'agent';
@@ -10,7 +12,7 @@ interface ChatMessage {
 }
 
 interface EcoAgentPanelProps {
-  activeFootprint: any;
+  activeFootprint: FootprintDocument | null;
   activeTab: string;
   isMobileDrawerOpen: boolean;
   onMobileDrawerClose: () => void;
@@ -48,10 +50,23 @@ export default function EcoAgentPanel({
   const handleSendMessage = async (textToSend: string) => {
     if (!textToSend.trim() || loading) return;
 
+    // Check for prompt injection
+    if (containsPromptInjection(textToSend)) {
+      const warningMsg: ChatMessage = {
+        sender: 'agent',
+        text: "Security Check Failed: Your input contains potential prompt injection patterns. Please rephrase your query.",
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, warningMsg]);
+      return;
+    }
+
+    const cleanText = sanitizeHTML(textToSend);
+
     // Add user message
     const userMsg: ChatMessage = {
       sender: 'user',
-      text: textToSend,
+      text: cleanText,
       timestamp: new Date()
     };
     setMessages(prev => [...prev, userMsg]);
@@ -62,7 +77,7 @@ export default function EcoAgentPanel({
       // Call Firebase Cloud Function
       const chatFn = httpsCallable(functions, 'ecoAgentChat');
       const result = await chatFn({
-        message: textToSend,
+        message: cleanText,
         activeFootprint,
         activeTab
       });
@@ -75,7 +90,7 @@ export default function EcoAgentPanel({
         timestamp: new Date()
       };
       setMessages(prev => [...prev, agentMsg]);
-    } catch (err: any) {
+    } catch (err) {
       console.error(err);
       
       // Fallback message

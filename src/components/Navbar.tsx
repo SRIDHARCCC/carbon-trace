@@ -1,10 +1,11 @@
 import { Sun, Moon, User, Leaf, Trophy } from 'lucide-react';
+import type { User as FirebaseUser } from 'firebase/auth';
 
 interface NavbarProps {
   darkMode: boolean;
   onThemeToggle: () => void;
   onAuthTrigger: () => void;
-  user: any;
+  user: FirebaseUser | null;
   activeView: 'tracker' | 'leaderboard';
   onViewChange: (view: 'tracker' | 'leaderboard') => void;
 }

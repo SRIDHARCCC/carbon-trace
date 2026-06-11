@@ -3,8 +3,6 @@
 
 EcoTrace India is a localized web application designed to help the Indian population track, analyze, and mitigate personal and household carbon emissions. The application is built entirely within the Google Cloud and Firebase ecosystem to ensure near-zero server management, hyper-scalability, and low-latency access across tier-1, tier-2, and tier-3 networks in India.
 
-Live Application URL: **[https://project_id.web.app](https://project_id.web.app)**
-
 ---
 
 ## 🌟 Key Features

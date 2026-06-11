@@ -4,15 +4,16 @@ import {
   signInWithEmailAndPassword, 
   createUserWithEmailAndPassword, 
   signOut,
-  updateProfile 
+  updateProfile
 } from 'firebase/auth';
+import type { User } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 import { LogIn, UserPlus, X, LogOut, Loader2, AlertCircle } from 'lucide-react';
 
 interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
-  user: any;
+  user: User | null;
 }
 
 export default function AuthModal({ isOpen, onClose, user }: AuthModalProps) {
@@ -55,9 +56,10 @@ export default function AuthModal({ isOpen, onClose, user }: AuthModalProps) {
       setEmail('');
       setPassword('');
       setName('');
-    } catch (err: any) {
+    } catch (err) {
       console.error(err);
-      setError(err.message || 'Authentication failed. Please try again.');
+      const errorMessage = err instanceof Error ? err.message : 'Authentication failed. Please try again.';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -68,7 +70,7 @@ export default function AuthModal({ isOpen, onClose, user }: AuthModalProps) {
     try {
       await signOut(auth);
       onClose();
-    } catch (err: any) {
+    } catch {
       setError('Failed to log out.');
     } finally {
       setLoading(false);
@@ -126,8 +128,9 @@ export default function AuthModal({ isOpen, onClose, user }: AuthModalProps) {
               {isSignUp && (
                 <>
                   <div>
-                    <label className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">Full Name</label>
+                    <label htmlFor="auth-name" className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">Full Name</label>
                     <input
+                      id="auth-name"
                       type="text"
                       required
                       placeholder="Sridhar Chandrasekaran"
@@ -138,8 +141,9 @@ export default function AuthModal({ isOpen, onClose, user }: AuthModalProps) {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">City / Region</label>
+                    <label htmlFor="auth-city" className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">City / Region</label>
                     <select
+                      id="auth-city"
                       value={city}
                       onChange={(e) => setCity(e.target.value)}
                       className="w-full bg-[#ffffff] dark:bg-[#09090b] border border-zinc-200 dark:border-zinc-800 rounded-[8px] px-[12px] py-[8px] text-sm text-zinc-950 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500"
@@ -157,8 +161,9 @@ export default function AuthModal({ isOpen, onClose, user }: AuthModalProps) {
               )}
 
               <div>
-                <label className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">Email Address</label>
+                <label htmlFor="auth-email" className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">Email Address</label>
                 <input
+                  id="auth-email"
                   type="email"
                   required
                   placeholder="name@domain.com"
@@ -169,8 +174,9 @@ export default function AuthModal({ isOpen, onClose, user }: AuthModalProps) {
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">Password</label>
+                <label htmlFor="auth-password" className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">Password</label>
                 <input
+                  id="auth-password"
                   type="password"
                   required
                   placeholder="Min 6 characters"
