@@ -1,0 +1,7 @@
+{
+  "projects": {
+    "default": "project_id"
+  },
+  "targets": {},
+  "etags": {}
+}
