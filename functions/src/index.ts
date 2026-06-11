@@ -65,7 +65,7 @@ try {
 
 /**
  * OnCall function to chat with the EcoAgent.
- * Takes { message: string, activeFootprint: any, activeTab: string }
+ * Takes { message: string, activeFootprint: FootprintData | null, activeTab: string }
  */
 export const ecoAgentChat = onCall({ region: 'asia-south1', maxInstances: 10 }, async (request) => {
   // 1. Security & Authentication Checks

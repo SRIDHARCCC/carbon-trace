@@ -82,7 +82,7 @@ export const DIET_FACTORS = {
 
 // 4. Infrastructure / Savings Constants
 export const AC_BASE_TEMP = 24; // Optimal temperature benchmark in India
-export const AC_EMISSION_PER_HOUR = 0.8; // Average kg CO2e per hour at 20°C
+export const AC_EMISSION_PER_HOUR = 0.8; // Average kg CO2e per hour at 24°C (increases by 6% per degree below 24°C)
 export const SOLAR_OFFSET_PER_KW_MONTH = 120 * 0.82; // ~120 kWh generated per kW capacity * grid emission factor
 
 /**

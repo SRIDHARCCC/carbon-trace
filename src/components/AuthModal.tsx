@@ -16,6 +16,8 @@ interface AuthModalProps {
   user: User | null;
 }
 
+const inputClassName = "w-full bg-white dark:bg-[#09090b] border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-950 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500";
+
 export default function AuthModal({ isOpen, onClose, user }: AuthModalProps) {
   const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState('');
@@ -136,7 +138,7 @@ export default function AuthModal({ isOpen, onClose, user }: AuthModalProps) {
                       placeholder="Sridhar Chandrasekaran"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      className="w-full bg-[#ffffff] dark:bg-[#09090b] border border-zinc-200 dark:border-zinc-800 rounded-[8px] px-[12px] py-[8px] text-sm text-zinc-950 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500"
+                      className={inputClassName}
                     />
                   </div>
 
@@ -146,7 +148,7 @@ export default function AuthModal({ isOpen, onClose, user }: AuthModalProps) {
                       id="auth-city"
                       value={city}
                       onChange={(e) => setCity(e.target.value)}
-                      className="w-full bg-[#ffffff] dark:bg-[#09090b] border border-zinc-200 dark:border-zinc-800 rounded-[8px] px-[12px] py-[8px] text-sm text-zinc-950 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500"
+                      className={inputClassName}
                     >
                       <option value="Bengaluru">Bengaluru (BESCOM)</option>
                       <option value="Mumbai">Mumbai (MSEB)</option>
@@ -169,7 +171,7 @@ export default function AuthModal({ isOpen, onClose, user }: AuthModalProps) {
                   placeholder="name@domain.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full bg-[#ffffff] dark:bg-[#09090b] border border-zinc-200 dark:border-zinc-800 rounded-[8px] px-[12px] py-[8px] text-sm text-zinc-950 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500"
+                  className={inputClassName}
                 />
               </div>
 
@@ -182,7 +184,7 @@ export default function AuthModal({ isOpen, onClose, user }: AuthModalProps) {
                   placeholder="Min 6 characters"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full bg-[#ffffff] dark:bg-[#09090b] border border-zinc-200 dark:border-zinc-800 rounded-[8px] px-[12px] py-[8px] text-sm text-zinc-950 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500"
+                  className={inputClassName}
                 />
               </div>
 

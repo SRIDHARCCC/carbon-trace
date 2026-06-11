@@ -22,6 +22,8 @@ interface TrackingMatrixProps {
   user: User | null;
 }
 
+const inputClassName = "w-full bg-white dark:bg-[#09090b] border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-950 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500";
+
 const defaultFootprint: FootprintDocument = {
   utilities: {
     electricityKwh: 150,
@@ -287,7 +289,7 @@ export default function TrackingMatrix({
                       id="electricity-board"
                       value={formData.utilities.electricityBoard}
                       onChange={(e) => updateField('utilities', 'electricityBoard', e.target.value)}
-                      className="w-full bg-[#ffffff] dark:bg-[#09090b] border border-zinc-200 dark:border-zinc-800 rounded-[8px] px-[12px] py-[8px] text-sm text-zinc-950 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500"
+                      className={inputClassName}
                     >
                       {Object.keys(ELECTRICITY_BOARD_FACTORS).map(board => (
                         <option key={board} value={board}>{board}</option>
@@ -304,7 +306,7 @@ export default function TrackingMatrix({
                         min="0"
                         value={formData.utilities.electricityKwh}
                         onChange={(e) => updateField('utilities', 'electricityKwh', safeParseNumber(e.target.value))}
-                        className="w-full bg-[#ffffff] dark:bg-[#09090b] border border-zinc-200 dark:border-zinc-800 rounded-[8px] px-[12px] py-[8px] text-sm text-zinc-950 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500"
+                        className={inputClassName}
                       />
                     </div>
                     <div>
@@ -316,7 +318,7 @@ export default function TrackingMatrix({
                         value={formData.utilities.electricityInr || ''}
                         placeholder="Estimate via Cost"
                         onChange={(e) => updateField('utilities', 'electricityInr', safeParseNumber(e.target.value))}
-                        className="w-full bg-[#ffffff] dark:bg-[#09090b] border border-zinc-200 dark:border-zinc-800 rounded-[8px] px-[12px] py-[8px] text-sm text-zinc-950 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500"
+                        className={inputClassName}
                       />
                     </div>
                   </div>
@@ -330,7 +332,7 @@ export default function TrackingMatrix({
                         min="0"
                         value={formData.utilities.lpgCylindersCount}
                         onChange={(e) => updateField('utilities', 'lpgCylindersCount', safeParseNumber(e.target.value))}
-                        className="w-full bg-[#ffffff] dark:bg-[#09090b] border border-zinc-200 dark:border-zinc-800 rounded-[8px] px-[12px] py-[8px] text-sm text-zinc-950 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500"
+                        className={inputClassName}
                       />
                     </div>
                     <div>
@@ -341,7 +343,7 @@ export default function TrackingMatrix({
                         min="1"
                         value={formData.utilities.lpgCylindersDepletionDays}
                         onChange={(e) => updateField('utilities', 'lpgCylindersDepletionDays', safeParseNumber(e.target.value, 30))}
-                        className="w-full bg-[#ffffff] dark:bg-[#09090b] border border-zinc-200 dark:border-zinc-800 rounded-[8px] px-[12px] py-[8px] text-sm text-zinc-950 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500"
+                        className={inputClassName}
                       />
                     </div>
                   </div>
@@ -362,7 +364,7 @@ export default function TrackingMatrix({
                         min="0"
                         value={formData.transport.metroKm}
                         onChange={(e) => updateField('transport', 'metroKm', safeParseNumber(e.target.value))}
-                        className="w-full bg-[#ffffff] dark:bg-[#09090b] border border-zinc-200 dark:border-zinc-800 rounded-[8px] px-[12px] py-[8px] text-sm text-zinc-950 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500"
+                        className={inputClassName}
                       />
                     </div>
                     <div>
@@ -373,7 +375,7 @@ export default function TrackingMatrix({
                         min="0"
                         value={formData.transport.localTrainKm}
                         onChange={(e) => updateField('transport', 'localTrainKm', safeParseNumber(e.target.value))}
-                        className="w-full bg-[#ffffff] dark:bg-[#09090b] border border-zinc-200 dark:border-zinc-800 rounded-[8px] px-[12px] py-[8px] text-sm text-zinc-950 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500"
+                        className={inputClassName}
                       />
                     </div>
                   </div>
@@ -387,7 +389,7 @@ export default function TrackingMatrix({
                         min="0"
                         value={formData.transport.autoRickshawKm}
                         onChange={(e) => updateField('transport', 'autoRickshawKm', safeParseNumber(e.target.value))}
-                        className="w-full bg-[#ffffff] dark:bg-[#09090b] border border-zinc-200 dark:border-zinc-800 rounded-[8px] px-[12px] py-[8px] text-sm text-zinc-950 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500"
+                        className={inputClassName}
                       />
                     </div>
                     <div />
@@ -402,7 +404,7 @@ export default function TrackingMatrix({
                         min="0"
                         value={formData.transport.twoWheelerKm}
                         onChange={(e) => updateField('transport', 'twoWheelerKm', safeParseNumber(e.target.value))}
-                        className="w-full bg-[#ffffff] dark:bg-[#09090b] border border-zinc-200 dark:border-zinc-800 rounded-[8px] px-[12px] py-[8px] text-sm text-zinc-950 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500"
+                        className={inputClassName}
                       />
                     </div>
                     <div>
@@ -411,7 +413,7 @@ export default function TrackingMatrix({
                         id="two-wheeler-type"
                         value={formData.transport.twoWheelerType}
                         onChange={(e) => updateField('transport', 'twoWheelerType', e.target.value as 'petrol' | 'electric')}
-                        className="w-full bg-[#ffffff] dark:bg-[#09090b] border border-zinc-200 dark:border-zinc-800 rounded-[8px] px-[12px] py-[8px] text-sm text-zinc-950 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500"
+                        className={inputClassName}
                       >
                         <option value="petrol">Petrol (Standard)</option>
                         <option value="electric">Electric (EV)</option>
@@ -428,7 +430,7 @@ export default function TrackingMatrix({
                         min="0"
                         value={formData.transport.carKm}
                         onChange={(e) => updateField('transport', 'carKm', safeParseNumber(e.target.value))}
-                        className="w-full bg-[#ffffff] dark:bg-[#09090b] border border-zinc-200 dark:border-zinc-800 rounded-[8px] px-[12px] py-[8px] text-sm text-zinc-950 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500"
+                        className={inputClassName}
                       />
                     </div>
                     <div>
@@ -437,7 +439,7 @@ export default function TrackingMatrix({
                         id="car-type"
                         value={formData.transport.carType}
                         onChange={(e) => updateField('transport', 'carType', e.target.value as 'petrol' | 'diesel' | 'cng' | 'ev')}
-                        className="w-full bg-[#ffffff] dark:bg-[#09090b] border border-zinc-200 dark:border-zinc-800 rounded-[8px] px-[12px] py-[8px] text-sm text-zinc-950 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500"
+                        className={inputClassName}
                       >
                         <option value="petrol">Petrol</option>
                         <option value="diesel">Diesel</option>
@@ -463,7 +465,7 @@ export default function TrackingMatrix({
                         min="0"
                         value={formData.diet.veganMeals}
                         onChange={(e) => updateField('diet', 'veganMeals', safeParseNumber(e.target.value))}
-                        className="w-full bg-[#ffffff] dark:bg-[#09090b] border border-zinc-200 dark:border-zinc-800 rounded-[8px] px-[12px] py-[8px] text-sm text-zinc-950 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500"
+                        className={inputClassName}
                       />
                     </div>
                     <div>
@@ -474,7 +476,7 @@ export default function TrackingMatrix({
                         min="0"
                         value={formData.diet.vegetarianMeals}
                         onChange={(e) => updateField('diet', 'vegetarianMeals', safeParseNumber(e.target.value))}
-                        className="w-full bg-[#ffffff] dark:bg-[#09090b] border border-zinc-200 dark:border-zinc-800 rounded-[8px] px-[12px] py-[8px] text-sm text-zinc-950 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500"
+                        className={inputClassName}
                       />
                     </div>
                     <div>
@@ -485,7 +487,7 @@ export default function TrackingMatrix({
                         min="0"
                         value={formData.diet.nonVegetarianMeals}
                         onChange={(e) => updateField('diet', 'nonVegetarianMeals', safeParseNumber(e.target.value))}
-                        className="w-full bg-[#ffffff] dark:bg-[#09090b] border border-zinc-200 dark:border-zinc-800 rounded-[8px] px-[12px] py-[8px] text-sm text-zinc-950 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500"
+                        className={inputClassName}
                       />
                     </div>
                   </div>
@@ -500,7 +502,7 @@ export default function TrackingMatrix({
                         step="0.1"
                         value={formData.diet.dairyLiters}
                         onChange={(e) => updateField('diet', 'dairyLiters', safeParseNumber(e.target.value))}
-                        className="w-full bg-[#ffffff] dark:bg-[#09090b] border border-zinc-200 dark:border-zinc-800 rounded-[8px] px-[12px] py-[8px] text-sm text-zinc-950 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500"
+                        className={inputClassName}
                       />
                     </div>
                     <div>
@@ -511,7 +513,7 @@ export default function TrackingMatrix({
                         min="0"
                         value={formData.diet.foodWasteKg}
                         onChange={(e) => updateField('diet', 'foodWasteKg', safeParseNumber(e.target.value))}
-                        className="w-full bg-[#ffffff] dark:bg-[#09090b] border border-zinc-200 dark:border-zinc-800 rounded-[8px] px-[12px] py-[8px] text-sm text-zinc-950 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500"
+                        className={inputClassName}
                       />
                     </div>
                   </div>
@@ -533,7 +535,7 @@ export default function TrackingMatrix({
                         max="30"
                         value={formData.infrastructure.acBaselineTemp}
                         onChange={(e) => updateField('infrastructure', 'acBaselineTemp', safeParseNumber(e.target.value, 24))}
-                        className="w-full bg-[#ffffff] dark:bg-[#09090b] border border-zinc-200 dark:border-zinc-800 rounded-[8px] px-[12px] py-[8px] text-sm text-zinc-950 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500"
+                        className={inputClassName}
                       />
                     </div>
                     <div>
@@ -545,7 +547,7 @@ export default function TrackingMatrix({
                         max="24"
                         value={formData.infrastructure.acHoursPerDay}
                         onChange={(e) => updateField('infrastructure', 'acHoursPerDay', safeParseNumber(e.target.value))}
-                        className="w-full bg-[#ffffff] dark:bg-[#09090b] border border-zinc-200 dark:border-zinc-800 rounded-[8px] px-[12px] py-[8px] text-sm text-zinc-950 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500"
+                        className={inputClassName}
                       />
                     </div>
                   </div>
@@ -560,7 +562,7 @@ export default function TrackingMatrix({
                         step="0.5"
                         value={formData.infrastructure.solarInstalledKw}
                         onChange={(e) => updateField('infrastructure', 'solarInstalledKw', safeParseNumber(e.target.value))}
-                        className="w-full bg-[#ffffff] dark:bg-[#09090b] border border-zinc-200 dark:border-zinc-800 rounded-[8px] px-[12px] py-[8px] text-sm text-zinc-950 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500"
+                        className={inputClassName}
                       />
                     </div>
                     <div>
@@ -571,7 +573,7 @@ export default function TrackingMatrix({
                         min="0"
                         value={formData.infrastructure.starAppliancesCount}
                         onChange={(e) => updateField('infrastructure', 'starAppliancesCount', safeParseNumber(e.target.value))}
-                        className="w-full bg-[#ffffff] dark:bg-[#09090b] border border-zinc-200 dark:border-zinc-800 rounded-[8px] px-[12px] py-[8px] text-sm text-zinc-950 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500"
+                        className={inputClassName}
                       />
                     </div>
                   </div>
