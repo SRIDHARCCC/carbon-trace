@@ -17,6 +17,7 @@ interface AuthModalProps {
 }
 
 const inputClassName = "w-full bg-white dark:bg-[#09090b] border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-950 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500";
+const labelClassName = "block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5";
 
 export default function AuthModal({ isOpen, onClose, user }: AuthModalProps) {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -130,7 +131,7 @@ export default function AuthModal({ isOpen, onClose, user }: AuthModalProps) {
               {isSignUp && (
                 <>
                   <div>
-                    <label htmlFor="auth-name" className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">Full Name</label>
+                    <label htmlFor="auth-name" className={labelClassName}>Full Name</label>
                     <input
                       id="auth-name"
                       type="text"
@@ -143,7 +144,7 @@ export default function AuthModal({ isOpen, onClose, user }: AuthModalProps) {
                   </div>
 
                   <div>
-                    <label htmlFor="auth-city" className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">City / Region</label>
+                    <label htmlFor="auth-city" className={labelClassName}>City / Region</label>
                     <select
                       id="auth-city"
                       value={city}
@@ -163,7 +164,7 @@ export default function AuthModal({ isOpen, onClose, user }: AuthModalProps) {
               )}
 
               <div>
-                <label htmlFor="auth-email" className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">Email Address</label>
+                <label htmlFor="auth-email" className={labelClassName}>Email Address</label>
                 <input
                   id="auth-email"
                   type="email"
@@ -176,7 +177,7 @@ export default function AuthModal({ isOpen, onClose, user }: AuthModalProps) {
               </div>
 
               <div>
-                <label htmlFor="auth-password" className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">Password</label>
+                <label htmlFor="auth-password" className={labelClassName}>Password</label>
                 <input
                   id="auth-password"
                   type="password"

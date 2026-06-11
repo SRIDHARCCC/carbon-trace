@@ -23,6 +23,8 @@ interface TrackingMatrixProps {
 }
 
 const inputClassName = "w-full bg-white dark:bg-[#09090b] border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-950 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500";
+const cardClassName = "bg-white dark:bg-[#0c0c0f] border border-zinc-200 dark:border-zinc-800 rounded-xl p-5 shadow-sm";
+const labelClassName = "block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5";
 
 const defaultFootprint: FootprintDocument = {
   utilities: {
@@ -190,7 +192,7 @@ export default function TrackingMatrix({
       {/* 1. KPI Cards Row */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         
-        <div className="bg-white dark:bg-[#0c0c0f] border border-zinc-200 dark:border-zinc-800 rounded-xl p-5 shadow-sm">
+        <div className={cardClassName}>
           <p className="text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-2">Total Monthly Footprint</p>
           <div className="flex items-baseline gap-2">
             <span className="text-3xl font-extrabold tracking-tight text-zinc-950 dark:text-zinc-50">
@@ -214,7 +216,7 @@ export default function TrackingMatrix({
           </div>
         </div>
 
-        <div className="bg-white dark:bg-[#0c0c0f] border border-zinc-200 dark:border-zinc-800 rounded-xl p-5 shadow-sm">
+        <div className={cardClassName}>
           <p className="text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-2">Estimated Monthly Savings</p>
           <div className="flex items-baseline gap-2">
             <span className="text-3xl font-extrabold tracking-tight text-brand-600 dark:text-brand-400">
@@ -227,7 +229,7 @@ export default function TrackingMatrix({
           </p>
         </div>
 
-        <div className="bg-white dark:bg-[#0c0c0f] border border-zinc-200 dark:border-zinc-800 rounded-xl p-5 shadow-sm">
+        <div className={cardClassName}>
           <p className="text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-2">Active Tracker Status</p>
           <div className="flex items-center gap-2 mt-1">
             <div className={`w-3 h-3 rounded-full animate-pulse ${user ? 'bg-emerald-500' : 'bg-amber-500'}`} />
@@ -284,7 +286,7 @@ export default function TrackingMatrix({
                   <h3 className="text-sm font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1">Utilities Ledger Logs</h3>
                   
                   <div>
-                    <label htmlFor="electricity-board" className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">State Electricity Board</label>
+                    <label htmlFor="electricity-board" className={labelClassName}>State Electricity Board</label>
                     <select
                       id="electricity-board"
                       value={formData.utilities.electricityBoard}
@@ -299,7 +301,7 @@ export default function TrackingMatrix({
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label htmlFor="electricity-kwh" className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Power Consumed (kWh)</label>
+                      <label htmlFor="electricity-kwh" className={labelClassName}>Power Consumed (kWh)</label>
                       <input
                         id="electricity-kwh"
                         type="number"
@@ -310,7 +312,7 @@ export default function TrackingMatrix({
                       />
                     </div>
                     <div>
-                      <label htmlFor="electricity-inr" className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Or Monthly Bill (INR)</label>
+                      <label htmlFor="electricity-inr" className={labelClassName}>Or Monthly Bill (INR)</label>
                       <input
                         id="electricity-inr"
                         type="number"
@@ -325,7 +327,7 @@ export default function TrackingMatrix({
 
                   <div className="grid grid-cols-2 gap-4 border-t border-zinc-100 dark:border-zinc-800/50 pt-4">
                     <div>
-                      <label htmlFor="lpg-cylinders" className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">LPG Cylinders Depleted</label>
+                      <label htmlFor="lpg-cylinders" className={labelClassName}>LPG Cylinders Depleted</label>
                       <input
                         id="lpg-cylinders"
                         type="number"
@@ -336,7 +338,7 @@ export default function TrackingMatrix({
                       />
                     </div>
                     <div>
-                      <label htmlFor="lpg-depletion-days" className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Days Per Cylinder</label>
+                      <label htmlFor="lpg-depletion-days" className={labelClassName}>Days Per Cylinder</label>
                       <input
                         id="lpg-depletion-days"
                         type="number"
@@ -357,7 +359,7 @@ export default function TrackingMatrix({
                   
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label htmlFor="metro-km" className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Metro Transit (km)</label>
+                      <label htmlFor="metro-km" className={labelClassName}>Metro Transit (km)</label>
                       <input
                         id="metro-km"
                         type="number"
@@ -368,7 +370,7 @@ export default function TrackingMatrix({
                       />
                     </div>
                     <div>
-                      <label htmlFor="local-train-km" className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Local Trains (km)</label>
+                      <label htmlFor="local-train-km" className={labelClassName}>Local Trains (km)</label>
                       <input
                         id="local-train-km"
                         type="number"
@@ -382,7 +384,7 @@ export default function TrackingMatrix({
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label htmlFor="auto-rickshaw-km" className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Auto-Rickshaws (km)</label>
+                      <label htmlFor="auto-rickshaw-km" className={labelClassName}>Auto-Rickshaws (km)</label>
                       <input
                         id="auto-rickshaw-km"
                         type="number"
@@ -397,7 +399,7 @@ export default function TrackingMatrix({
 
                   <div className="grid grid-cols-2 gap-4 border-t border-zinc-100 dark:border-zinc-800/50 pt-4">
                     <div>
-                      <label htmlFor="two-wheeler-km" className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Two-Wheeler Commute (km)</label>
+                      <label htmlFor="two-wheeler-km" className={labelClassName}>Two-Wheeler Commute (km)</label>
                       <input
                         id="two-wheeler-km"
                         type="number"
@@ -408,7 +410,7 @@ export default function TrackingMatrix({
                       />
                     </div>
                     <div>
-                      <label htmlFor="two-wheeler-type" className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Two-Wheeler Fuel</label>
+                      <label htmlFor="two-wheeler-type" className={labelClassName}>Two-Wheeler Fuel</label>
                       <select
                         id="two-wheeler-type"
                         value={formData.transport.twoWheelerType}
@@ -423,7 +425,7 @@ export default function TrackingMatrix({
 
                   <div className="grid grid-cols-2 gap-4 pt-1">
                     <div>
-                      <label htmlFor="car-km" className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Car Commute (km)</label>
+                      <label htmlFor="car-km" className={labelClassName}>Car Commute (km)</label>
                       <input
                         id="car-km"
                         type="number"
@@ -434,7 +436,7 @@ export default function TrackingMatrix({
                       />
                     </div>
                     <div>
-                      <label htmlFor="car-type" className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Car Fuel Type</label>
+                      <label htmlFor="car-type" className={labelClassName}>Car Fuel Type</label>
                       <select
                         id="car-type"
                         value={formData.transport.carType}
@@ -458,7 +460,7 @@ export default function TrackingMatrix({
                   
                   <div className="grid grid-cols-3 gap-3">
                     <div>
-                      <label htmlFor="vegan-meals" className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Vegan Meals</label>
+                      <label htmlFor="vegan-meals" className={labelClassName}>Vegan Meals</label>
                       <input
                         id="vegan-meals"
                         type="number"
@@ -469,7 +471,7 @@ export default function TrackingMatrix({
                       />
                     </div>
                     <div>
-                      <label htmlFor="veg-meals" className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Veg Meals</label>
+                      <label htmlFor="veg-meals" className={labelClassName}>Veg Meals</label>
                       <input
                         id="veg-meals"
                         type="number"
@@ -480,7 +482,7 @@ export default function TrackingMatrix({
                       />
                     </div>
                     <div>
-                      <label htmlFor="non-veg-meals" className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Non-Veg Meals</label>
+                      <label htmlFor="non-veg-meals" className={labelClassName}>Non-Veg Meals</label>
                       <input
                         id="non-veg-meals"
                         type="number"
@@ -494,7 +496,7 @@ export default function TrackingMatrix({
 
                   <div className="grid grid-cols-2 gap-4 border-t border-zinc-100 dark:border-zinc-800/50 pt-4">
                     <div>
-                      <label htmlFor="dairy-liters" className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Dairy Intake (Liters)</label>
+                      <label htmlFor="dairy-liters" className={labelClassName}>Dairy Intake (Liters)</label>
                       <input
                         id="dairy-liters"
                         type="number"
@@ -506,7 +508,7 @@ export default function TrackingMatrix({
                       />
                     </div>
                     <div>
-                      <label htmlFor="food-waste" className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Food Waste (kg)</label>
+                      <label htmlFor="food-waste" className={labelClassName}>Food Waste (kg)</label>
                       <input
                         id="food-waste"
                         type="number"
@@ -527,7 +529,7 @@ export default function TrackingMatrix({
                   
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label htmlFor="ac-temp-baseline" className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">AC Temp Baseline (°C)</label>
+                      <label htmlFor="ac-temp-baseline" className={labelClassName}>AC Temp Baseline (°C)</label>
                       <input
                         id="ac-temp-baseline"
                         type="number"
@@ -539,7 +541,7 @@ export default function TrackingMatrix({
                       />
                     </div>
                     <div>
-                      <label htmlFor="ac-runtime" className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">AC Runtime (hours/day)</label>
+                      <label htmlFor="ac-runtime" className={labelClassName}>AC Runtime (hours/day)</label>
                       <input
                         id="ac-runtime"
                         type="number"
@@ -554,7 +556,7 @@ export default function TrackingMatrix({
 
                   <div className="grid grid-cols-2 gap-4 border-t border-zinc-100 dark:border-zinc-800/50 pt-4">
                     <div>
-                      <label htmlFor="solar-kw" className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Rooftop Solar (kW)</label>
+                      <label htmlFor="solar-kw" className={labelClassName}>Rooftop Solar (kW)</label>
                       <input
                         id="solar-kw"
                         type="number"
@@ -566,7 +568,7 @@ export default function TrackingMatrix({
                       />
                     </div>
                     <div>
-                      <label htmlFor="star-appliances" className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">5-Star Appliances</label>
+                      <label htmlFor="star-appliances" className={labelClassName}>5-Star Appliances</label>
                       <input
                         id="star-appliances"
                         type="number"
@@ -623,7 +625,7 @@ export default function TrackingMatrix({
         <div className="lg:col-span-2 space-y-6 flex flex-col">
           
           {/* ECharts pie chart */}
-          <div className="bg-white dark:bg-[#0c0c0f] border border-zinc-200 dark:border-zinc-800 rounded-xl p-5 shadow-sm flex-1 flex flex-col justify-between">
+          <div className={`${cardClassName} flex-1 flex flex-col justify-between`}>
             <h4 className="text-sm font-bold text-zinc-950 dark:text-zinc-50 flex items-center gap-1.5 mb-4">
               <BarChart2 className="w-4 h-4 text-brand-600" />
               Footprint Breakdown
@@ -634,7 +636,7 @@ export default function TrackingMatrix({
           </div>
 
           {/* Breakdown summary */}
-          <div className="bg-white dark:bg-[#0c0c0f] border border-zinc-200 dark:border-zinc-800 rounded-xl p-5 shadow-sm">
+          <div className={cardClassName}>
             <h4 className="text-sm font-bold text-zinc-950 dark:text-zinc-50 mb-3">Carbon Weight Breakdown</h4>
             <div className="space-y-3">
               {[
